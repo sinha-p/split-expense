@@ -1,0 +1,42 @@
+.App {
+  height: 100%;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.container {
+  padding: 10px;
+  height: 100%;
+}
+
+.addbtn {
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+  color: #5C6BC0;
+  background: #5C6BC0;
+}
+
+.info {
+  position: absolute;
+  font-size: 1.5em;
+  display: inline-block;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
