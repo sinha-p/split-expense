@@ -19,6 +19,19 @@ export const getAllData = (dispatch) => {
   });
 }
 
+export const getItemData = (id) => {
+  return new Promise(function(resolve, reject){
+    console.log("getItem:",id)
+    db.get(id).then(function (doc) {
+      console.log("getItem:",doc)
+      return resolve(doc);
+    }).catch(function (err) {
+      console.log(err);
+      return reject(err);
+    });
+  });
+}
+
 export const putData = (expense) => {
   console.log("putData",expense);
   return new Promise(function(resolve, reject) {
@@ -30,6 +43,28 @@ export const putData = (expense) => {
       reject(err);
     });
   })
+}
+
+export const updateData = (expense) => {
+  return new Promise(function(resolve, reject){
+    db.get(expense._id).then(function(doc) {
+      return db.put({
+        _id: expense._id,
+        _rev: doc._rev,
+        desc: expense.desc,
+        cost: expense.cost,
+        date: expense.date,
+        paidby: expense.paidby,
+        sharetype: expense.sharetype,
+        members: expense.members,
+        sharepermember: expense.sharepermember
+      });
+    }).then(function(response) {
+      return resolve(response);
+    }).catch(function (err) {
+      return reject(err);
+    });
+  });
 }
 
 export const deleteData = (payload) => {

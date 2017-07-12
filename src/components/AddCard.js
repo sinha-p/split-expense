@@ -10,8 +10,9 @@ import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import {AddIcon, ProfileIcon, RemoveIcon} from './Icons';
-import AddAction from '../actions/expenseActions';
+import {AddAction, EditAction} from '../actions/expenseActions';
 import DatePicker from 'material-ui/DatePicker';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import {Link} from 'react-router-dom';
 
 const iconStyles = {
@@ -23,18 +24,34 @@ const cardStyles = {
   marginLeft: 'auto',
   marginTop: 10,
 };
-
+const styles = {
+  block: {
+    maxWidth: 250,
+  },
+  radioButton: {
+    marginBottom: 16,
+  },
+};
 class AddCard extends React.Component {
 
   constructor(props) {
     super(props);
+    let edit = null
+    if(this.props.editItem) {
+      edit = this.props.editItem.doc;
+    }
     this.state = {
       expanded: false,
       dataSource: [],
       pershare: 0.00,
-      members: ["me"],
-      sharepermember: [0],
-      isdisabled: true
+      members: (edit && edit.members) ? edit.members : ["me"],
+      sharepermember: (edit && edit.sharepermember) ? edit.sharepermember : [0],
+      isdisabled: (edit && edit.sharetype === "unequalshare") ? false : true,
+      desc: (edit && edit.desc) ? edit.desc : null,
+      date: (edit && edit.date) ? new Date(edit.date) : new Date(),
+      cost: (edit && edit.cost) ? edit.cost : null,
+      sharetype: (edit && edit.sharetype) ? edit.sharetype : null,
+      paidby: (edit && edit.paidby) ? edit.paidby : null
     };
   }
 
@@ -46,7 +63,7 @@ class AddCard extends React.Component {
       this.setState({isdisabled : false});
       this.handleUnequalShare();
     }
-    this.setState({sharetype : value,value: value});
+    this.setState({sharetype : value});
   }
 
   handleUpdateInput = (value) => {
@@ -86,7 +103,7 @@ class AddCard extends React.Component {
     let new_shares, new_members;
     this.state.sharepermember.push(0);
     this.state.members.push(this.state.dataSource[0]);
-    if(this.state.sharetype === "equalshare") {
+    if(this.state.sharetype === "equalshare" || this.state) {
       this.handleEqualShare();
     } else {
       this.handleUnequalShare();
@@ -104,7 +121,13 @@ class AddCard extends React.Component {
       members: compstate.members,
       sharepermember: compstate.sharepermember
     };
-    this.props.dispatch(AddAction(formobj, this.props.dispatch));
+    if(this.props.editItem) {
+      formobj._id = this.props.editItem.doc._id;
+      formobj._rev = this.props.editItem.doc._rev;
+      this.props.dispatch(EditAction(formobj, this.props.dispatch));
+    } else {
+      this.props.dispatch(AddAction(formobj, this.props.dispatch));
+    }
     this.props.history.push('/list');
   }
 
@@ -120,7 +143,7 @@ class AddCard extends React.Component {
     }
   }
 
-  handlePaidby = (value) => {
+  handlePaidby = (event, value) => {
     this.setState({
       paidby: value,
     });
@@ -159,6 +182,17 @@ class AddCard extends React.Component {
       );
     });
   }
+  renderpaidby() {
+    return this.state.members.map((m,i) => {
+      return (
+        <RadioButton
+        value={this.state.members[i]}
+        label={this.state.members[i]}
+        style={styles.radioButton}
+        />
+      );
+    });
+  }
 
   render() {
     let item = this.props.item;
@@ -166,10 +200,10 @@ class AddCard extends React.Component {
       <Card style={cardStyles}>
         <form>
           <CardText>
-            <TextField name="desc" hintText="Pizza" floatingLabelText="Title" floatingLabelFixed={true} onChange = {this.handleInput}/><br />
-            <DatePicker name="date" hintText="Landscape Dialog" mode="landscape" onChange = {this.handleInput} />
-            <TextField name="cost" hintText="00.0" floatingLabelText="Total Expense" floatingLabelFixed={true} onChange = {this.handleInput} /><br />
-            <SelectField name="sharetype" floatingLabelText="Split Type" value={this.state.value} onChange={this.handleChange}>
+            <TextField name="desc" defaultValue = {this.state.desc} hintText="Pizza" floatingLabelText="Title" floatingLabelFixed={true} onChange = {this.handleInput}/><br />
+            <DatePicker name="date" defaultDate = {this.state.date} hintText="Landscape Dialog" mode="landscape" onChange = {this.handleInput} />
+            <TextField name="cost" defaultValue = {this.state.cost} hintText="00.0" floatingLabelText="Total Expense" floatingLabelFixed={true} onChange = {this.handleInput} /><br />
+            <SelectField name="sharetype" floatingLabelText="Split Type" value={this.state.sharetype} onChange={this.handleChange}>
               <MenuItem value="equalshare" primaryText="Equal Share" />
               <MenuItem value="unequalshare" primaryText="Unequal Share" />
             </SelectField>
@@ -179,7 +213,11 @@ class AddCard extends React.Component {
             </List>
             <AutoComplete hintText="Add Members" dataSource={this.state.dataSource} onUpdateInput={this.handleUpdateInput} />
             <AddIcon style={iconStyles} onTouchTap={this.handleAddMember} /><br/>
-            <AutoComplete name="paidby" hintText="Abc Xyz" floatingLabelText="Paid By" floatingLabelFixed={true} dataSource = {this.state.members} onUpdateInput={this.handlePaidby}/><br />
+             {/* <AutoComplete name="paidby" hintText="Abc Xyz" floatingLabelText="Paid By" floatingLabelFixed={true} dataSource = {this.state.members} onUpdateInput={this.handlePaidby}/><br />  */}
+            <Subheader>Paid By</Subheader>
+            <RadioButtonGroup name="paidBy" defaultSelected={this.state.paidby} onChange={this.handlePaidby}>
+                {this.renderpaidby()}
+            </RadioButtonGroup>
           </CardText>
           <CardActions>
             <FlatButton label="Save" onTouchTap={this.handleSubmit} />

@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import {DeleteAction} from '../actions/expenseActions';
 import Avatar from 'material-ui/Avatar';
 import {HomeIcon, ProfileIcon, DollarIcon, PayIcon, MemberIcon, ShareIcon} from './Icons';
+import { Link } from 'react-router-dom';
 
 const iconStyles = {
   marginRight: 15,
@@ -35,10 +36,6 @@ class ExpenseCard extends React.Component {
 
   handleExpandChange = (expanded) => {
     this.setState({expanded: expanded});
-  };
-
-  handleToggle = (event, toggle) => {
-    this.setState({expanded: toggle});
   };
 
   handleExpand = () => {
@@ -88,6 +85,9 @@ class ExpenseCard extends React.Component {
           <FlatButton label="Expand" onTouchTap={this.handleExpand} />
           <FlatButton label="Reduce" onTouchTap={this.handleReduce} />
           <FlatButton label="Delete" onTouchTap={(event)=> this.handleDelete(event,item.doc._id)} />
+          <Link to={'/edit/'+item.id}>
+          <FlatButton label="Edit" />
+          </Link>         
         </CardActions>
       </Card>
     );

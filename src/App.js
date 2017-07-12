@@ -5,6 +5,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import AddCard from './components/AddCard';
+import EditCard from './components/EditCard';
 import {
   BrowserRouter as Router,
   Route,
@@ -26,6 +27,7 @@ class App extends Component {
             <div>
             <Route name ="list" path="/list" component = {ExpenseListComponent} />
             <Route path="/add" component = {AddCard} />
+            <Route path="/edit/:id" component = {EditCard} />
             <Link to="/add">
               <FloatingActionButton className="addbtn" backgroundColor="#5C6BC0" >
            	    <ContentAdd />
