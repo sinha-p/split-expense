@@ -24,7 +24,7 @@ class EditCard extends React.Component {
   render() {
     let item = getInfo(this.props.items, this.props.match.params.id);
     return (
-      <AddCard editItem= {item}/>
+      <AddCard editItem= {item} history={this.props.history}/>
     );
   }
 }

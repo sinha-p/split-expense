@@ -41,6 +41,8 @@ class AddCard extends React.Component {
       edit = this.props.editItem.doc;
     }
     this.state = {
+      descError: '',
+      costError: '',
       expanded: false,
       dataSource: [],
       pershare: 0.00,
@@ -51,7 +53,7 @@ class AddCard extends React.Component {
       date: (edit && edit.date) ? new Date(edit.date) : new Date(),
       cost: (edit && edit.cost) ? edit.cost : null,
       sharetype: (edit && edit.sharetype) ? edit.sharetype : null,
-      paidby: (edit && edit.paidby) ? edit.paidby : null
+      paidby: (edit && edit.paidby) ? edit.paidby : 'me'
     };
   }
 
@@ -112,26 +114,47 @@ class AddCard extends React.Component {
 
   handleSubmit = (dispatch) => {
     let compstate = this.state;
-    let formobj = {
-      desc: compstate.desc,
-      cost: compstate.cost,
-      date: compstate.date,
-      paidby: compstate.paidby,
-      sharetype: compstate.sharetype,
-      members: compstate.members,
-      sharepermember: compstate.sharepermember
-    };
-    if(this.props.editItem) {
-      formobj._id = this.props.editItem.doc._id;
-      formobj._rev = this.props.editItem.doc._rev;
-      this.props.dispatch(EditAction(formobj, this.props.dispatch));
-    } else {
-      this.props.dispatch(AddAction(formobj, this.props.dispatch));
+    if(compstate.desc === '' || compstate.desc === null) {
+      this.setState({descError: 'This Field cannot be empty'});
+      return;
     }
-    this.props.history.push('/list');
+    if(compstate.cost === '' || compstate.cost === null) {
+      this.setState({costError: 'This Field cannot be empty'});
+      return;
+    }
+    if(compstate.desc !== '' && compstate.cost !== '') 
+    {
+      let formobj = {
+        desc: compstate.desc,
+        cost: compstate.cost,
+        date: compstate.date,
+        paidby: compstate.paidby,
+        sharetype: compstate.sharetype,
+        members: compstate.members,
+        sharepermember: compstate.sharepermember
+      };
+      if(this.props.editItem) {
+        formobj._id = this.props.editItem.doc._id;
+        formobj._rev = this.props.editItem.doc._rev;
+        this.props.dispatch(EditAction(formobj, this.props.dispatch));
+      } else {
+        this.props.dispatch(AddAction(formobj, this.props.dispatch));
+      }
+      this.props.history.push('/list');
+    }
+    
   }
 
   handleInput = (e, v) => {
+    if (e.target.name == "desc" && v != '') {
+      this.setState({ descError: '' })
+    } else if(e.target.name == "desc" && v == ''){
+      this.setState({ descError: 'This field cannot be Empty' });
+    } else if(e.target.name == "cost" && v != '' && !isNaN(v)){
+      this.setState({ costError: '' });
+    } else if(e.target.name == "cost" && (v == '' || isNaN(v))){
+      this.setState({ costError: 'Provide a valid Input'});
+    }
     if(e == null) {
       this.setState({
         date: v
@@ -200,10 +223,10 @@ class AddCard extends React.Component {
       <Card style={cardStyles}>
         <form>
           <CardText>
-            <TextField name="desc" defaultValue = {this.state.desc} hintText="Pizza" floatingLabelText="Title" floatingLabelFixed={true} onChange = {this.handleInput}/><br />
+            <TextField name="desc" defaultValue = {this.state.desc} errorText = {this.state.descError} hintText="Pizza" floatingLabelText="Title" floatingLabelFixed={true} onChange = {this.handleInput}/><br />
             <DatePicker name="date" defaultDate = {this.state.date} hintText="Landscape Dialog" mode="landscape" onChange = {this.handleInput} />
-            <TextField name="cost" defaultValue = {this.state.cost} hintText="00.0" floatingLabelText="Total Expense" floatingLabelFixed={true} onChange = {this.handleInput} /><br />
-            <SelectField name="sharetype" floatingLabelText="Split Type" value={this.state.sharetype} onChange={this.handleChange}>
+            <TextField name="cost" defaultValue = {this.state.cost} errorText = {this.state.costError} hintText="00.0" floatingLabelText="Total Expense" floatingLabelFixed={true} onChange = {this.handleInput} /><br />
+            <SelectField name="sharetype" floatingLabelText="Split Type" value={this.state.sharetype} errorText={'' && 'Select a type'} onChange={this.handleChange}>
               <MenuItem value="equalshare" primaryText="Equal Share" />
               <MenuItem value="unequalshare" primaryText="Unequal Share" />
             </SelectField>
@@ -213,7 +236,6 @@ class AddCard extends React.Component {
             </List>
             <AutoComplete hintText="Add Members" dataSource={this.state.dataSource} onUpdateInput={this.handleUpdateInput} />
             <AddIcon style={iconStyles} onTouchTap={this.handleAddMember} /><br/>
-             {/* <AutoComplete name="paidby" hintText="Abc Xyz" floatingLabelText="Paid By" floatingLabelFixed={true} dataSource = {this.state.members} onUpdateInput={this.handlePaidby}/><br />  */}
             <Subheader>Paid By</Subheader>
             <RadioButtonGroup name="paidBy" defaultSelected={this.state.paidby} onChange={this.handlePaidby}>
                 {this.renderpaidby()}
