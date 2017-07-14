@@ -24,11 +24,11 @@ class App extends Component {
   	      <AppBar style={AppBarStyle} title="Split-Expense" showMenuIconButton={false}/>
           <Router>
             <div>
-              <Route exact path="/" component = {ExpenseListComponent} />
-              <Route path="/list" component = {ExpenseListComponent} />
-              <Route path="/add" component = {AddCard} />
-              <Route path="/edit/:id" component = {EditCard} />
-              <Link to="/add">
+              <Route exact path={process.env.PUBLIC_URL +"/"} component = {ExpenseListComponent} />
+              <Route path={process.env.PUBLIC_URL +"/list"} component = {ExpenseListComponent} />
+              <Route path={process.env.PUBLIC_URL +"/add"} component = {AddCard} />
+              <Route path={process.env.PUBLIC_URL +"/edit/:id"} component = {EditCard} />
+              <Link to={process.env.PUBLIC_URL +"/add"}>
                 <FloatingActionButton className="addbtn" backgroundColor="#5C6BC0" >
                   <ContentAdd />
                 </FloatingActionButton>

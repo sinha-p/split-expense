@@ -140,7 +140,7 @@ class AddCard extends React.Component {
       } else {
         this.props.dispatch(AddAction(formobj, this.props.dispatch));
       }
-      this.props.history.push('/');
+      this.props.history.push(process.env.PUBLIC_URL +'/');
     }
     
   }
@@ -243,7 +243,7 @@ class AddCard extends React.Component {
           </CardText>
           <CardActions>
             <FlatButton label="Save" onTouchTap={this.handleSubmit} />
-            <Link to="/"><FlatButton label="Cancel" /></Link>
+            <Link to={process.env.PUBLIC_URL +"/"}><FlatButton label="Cancel" /></Link>
           </CardActions>
         </form>
       </Card>

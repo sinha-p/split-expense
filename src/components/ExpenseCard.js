@@ -85,7 +85,7 @@ class ExpenseCard extends React.Component {
           <FlatButton label="Expand" onTouchTap={this.handleExpand} />
           <FlatButton label="Reduce" onTouchTap={this.handleReduce} />
           <FlatButton label="Delete" onTouchTap={(event)=> this.handleDelete(event,item.doc._id)} />
-          <Link to={'/edit/'+item.id}>
+          <Link to={process.env.PUBLIC_URL +'/edit/'+item.id}>
           <FlatButton label="Edit" />
           </Link>         
         </CardActions>
