@@ -4,7 +4,7 @@ import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Ca
 import FlatButton from 'material-ui/FlatButton';
 import {DeleteAction} from '../actions/expenseActions';
 import Avatar from 'material-ui/Avatar';
-import {HomeIcon, ProfileIcon, DollarIcon, PayIcon, MemberIcon, ShareIcon} from './Icons';
+import {ProfileIcon, DollarIcon, PayIcon, MemberIcon, ShareIcon} from './Icons';
 import { Link } from 'react-router-dom';
 
 const iconStyles = {

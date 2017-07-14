@@ -140,22 +140,22 @@ class AddCard extends React.Component {
       } else {
         this.props.dispatch(AddAction(formobj, this.props.dispatch));
       }
-      this.props.history.push('/list');
+      this.props.history.push('/');
     }
     
   }
 
   handleInput = (e, v) => {
-    if (e.target.name == "desc" && v != '') {
+    if (e.target.name === "desc" && v !== '') {
       this.setState({ descError: '' })
-    } else if(e.target.name == "desc" && v == ''){
+    } else if(e.target.name === "desc" && v === ''){
       this.setState({ descError: 'This field cannot be Empty' });
-    } else if(e.target.name == "cost" && v != '' && !isNaN(v)){
+    } else if(e.target.name === "cost" && v !== '' && !isNaN(v)){
       this.setState({ costError: '' });
-    } else if(e.target.name == "cost" && (v == '' || isNaN(v))){
+    } else if(e.target.name === "cost" && (v === '' || isNaN(v))){
       this.setState({ costError: 'Provide a valid Input'});
     }
-    if(e == null) {
+    if(e === null) {
       this.setState({
         date: v
       });
@@ -243,7 +243,7 @@ class AddCard extends React.Component {
           </CardText>
           <CardActions>
             <FlatButton label="Save" onTouchTap={this.handleSubmit} />
-            <Link to="/list"><FlatButton label="Cancel" /></Link>
+            <Link to="/"><FlatButton label="Cancel" /></Link>
           </CardActions>
         </form>
       </Card>
