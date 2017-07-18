@@ -13,6 +13,7 @@ import {AddIcon, ProfileIcon, RemoveIcon} from './Icons';
 import {AddAction, EditAction} from '../actions/expenseActions';
 import DatePicker from 'material-ui/DatePicker';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import Snackbar from 'material-ui/Snackbar';
 import {Link} from 'react-router-dom';
 
 const iconStyles = {
@@ -41,6 +42,7 @@ class AddCard extends React.Component {
       edit = this.props.editItem.doc;
     }
     this.state = {
+      open: false,
       descError: '',
       costError: '',
       expanded: false,
@@ -122,6 +124,13 @@ class AddCard extends React.Component {
       this.setState({costError: 'This Field cannot be empty'});
       return;
     }
+    let sum = compstate.sharepermember.reduce((a,b) => parseInt(a)+parseInt(b),0);
+    if(sum !== parseInt(compstate.cost)) {
+      this.setState({
+        open: true,
+      });
+      return;
+    }
     if(compstate.desc !== '' && compstate.cost !== '') 
     {
       let formobj = {
@@ -194,6 +203,12 @@ class AddCard extends React.Component {
     }
   }
 
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
   renderlist() {
     return this.state.members.map((m,i) => {
       return (
@@ -246,6 +261,7 @@ class AddCard extends React.Component {
             <Link to={process.env.PUBLIC_URL +"/"}><FlatButton label="Cancel" /></Link>
           </CardActions>
         </form>
+        <Snackbar open={this.state.open} message="Amount Entered does not match total cost" autoHideDuration={4000} onRequestClose={this.handleRequestClose} />
       </Card>
     );
   }

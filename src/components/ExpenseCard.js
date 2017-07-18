@@ -30,7 +30,8 @@ class ExpenseCard extends React.Component {
     this.state = {
       expanded: false,
       title: title,
-      members:this.props.item.doc.members+""
+      members:this.props.item.doc.members+"",
+      sharetype: (this.props.item.doc.sharetype === "equalshare")?"Equal Sharing" : "Custom Sharing"
     };
   }
 
@@ -47,7 +48,6 @@ class ExpenseCard extends React.Component {
   };
 
   handleDelete = (e, id) => {
-    console.log("handleDelete:",id);
     this.props.dispatch(DeleteAction(id,this.props.dispatch));
   }
   render() {
@@ -62,7 +62,7 @@ class ExpenseCard extends React.Component {
           actAsExpander={true}
           showExpandableButton={true}
         />
-        <CardTitle title={item.doc.desc} subtitle={new Date(item.doc.date).toUTCString()} expandable={true} />
+        <CardTitle title={item.doc.desc.charAt(0).toUpperCase() + item.doc.desc.substr(1).toLowerCase()} subtitle={new Date(item.doc.date).toLocaleDateString()} expandable={true} />
         <CardText expandable={true}>
           <div>
             <DollarIcon style={iconStyles}/>
@@ -78,12 +78,10 @@ class ExpenseCard extends React.Component {
           </div>
           <div>
             <ShareIcon style={iconStyles}/>
-            <div className="info"> Sharing Type : {item.doc.sharetype}</div>
+            <div className="info"> Sharing Type : {this.state.sharetype}</div>
           </div>
         </CardText>
         <CardActions>
-          <FlatButton label="Expand" onTouchTap={this.handleExpand} />
-          <FlatButton label="Reduce" onTouchTap={this.handleReduce} />
           <FlatButton label="Delete" onTouchTap={(event)=> this.handleDelete(event,item.doc._id)} />
           <Link to={process.env.PUBLIC_URL +'/edit/'+item.id}>
           <FlatButton label="Edit" />
